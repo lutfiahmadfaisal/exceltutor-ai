@@ -55,8 +55,8 @@ export function setupMediaRecorder(
 
   recorder.onstop = () => {
     const blob = new Blob(chunks, { type: 'video/webm' });
-    // Wrap async onStop — jika return Promise, tangkap error-nya
-    const result = options.onStop?.(blob);
+    // Panggil onStop — bisa sync atau async
+    const result = options.onStop?.(blob) as unknown;
     if (result instanceof Promise) {
       result.catch((err) => {
         options.onError?.(err instanceof Error ? err : new Error(String(err)));
