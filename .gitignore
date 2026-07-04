@@ -39,6 +39,25 @@ yarn-error.log*
 # app logs
 /logs/
 
+# generated audio & video (tmp output)
+/tmp/
+
+# LLM / session artifacts
+*.session
+
+# IDE
+.idea/
+.vscode/settings.json
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+Desktop.ini
+
+# turbo
+.turbo/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
