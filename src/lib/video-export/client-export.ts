@@ -44,6 +44,12 @@ export function setupMediaRecorder(
     return null;
   }
 
+  // canvas.captureStream bisa return null
+  if (!canvasStream) {
+    options.onError?.(new Error('Canvas stream not available'));
+    return null;
+  }
+
   const chunks: Blob[] = [];
   const recorder = new MediaRecorder(canvasStream, { mimeType });
 
