@@ -4,6 +4,7 @@
 // ============================================================
 
 import { APP_CONFIG } from '@/config/constants';
+import { getCombinedRecordingStream } from '@/lib/audio/audio-context';
 
 export interface ClientRecorderOptions {
   fps?: number;
@@ -13,7 +14,7 @@ export interface ClientRecorderOptions {
 }
 
 /**
- * Setup MediaRecorder dari HTMLCanvasElement.
+ * Setup MediaRecorder dari HTMLCanvasElement + AudioContext.
  * Returns: MediaRecorder instance (belum di-start)
  */
 export function setupMediaRecorder(
@@ -21,7 +22,7 @@ export function setupMediaRecorder(
   options: ClientRecorderOptions = {}
 ): MediaRecorder | null {
   const fps = options.fps || APP_CONFIG.video.fps;
-  const canvasStream = canvas.captureStream(fps);
+  const canvasStream = getCombinedRecordingStream(canvas, fps);
 
   const mimeTypes = [
     'video/webm;codecs=vp9,opus',

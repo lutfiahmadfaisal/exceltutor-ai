@@ -6,6 +6,7 @@
 
 import { useEffect, useRef, useCallback } from 'react';
 import { useExcelStore } from '@/store/excel-store';
+import { playAudioThroughContext } from '@/lib/audio/audio-context';
 
 /**
  * StepAnimator — handles auto-playback of steps with audio sync.
@@ -62,24 +63,20 @@ export default function StepAnimator() {
     const step = state.steps[state.currentStepIndex];
     if (!step) return;
 
-    // Play audio for current step
-    if (audioUrls[state.currentStepIndex]) {
-      try {
-        if (audioRef.current) {
-          audioRef.current.pause();
+    // Play audio melalui AudioContext agar ikut ke stream recording
+    let cancelled = false;
+    let duration = step.duration || 3000;
+    const audioUrl = audioUrls[state.currentStepIndex];
+
+    if (audioUrl) {
+      playAudioThroughContext(audioUrl).then((ms) => {
+        if (!cancelled) {
+          duration = ms > 0 ? ms : duration;
         }
-        const audio = new Audio(audioUrls[state.currentStepIndex]);
-        audioRef.current = audio;
-        audio.play().catch(() => {
-          // Audio play might fail if user hasn't interacted — that's ok
-        });
-      } catch {
-        // Audio error — continue anyway
-      }
+      }).catch(() => {});
     }
 
     // Determine next step timing
-    const duration = audioDurations[state.currentStepIndex] || step.duration || 3000;
     const speedFactor =
       state.speed === 'slow' ? 1.5 :
       state.speed === 'fast' ? 0.5 :
@@ -91,6 +88,7 @@ export default function StepAnimator() {
     }, duration * speedFactor);
 
     return () => {
+      cancelled = true;
       if (timerRef.current) {
         clearTimeout(timerRef.current);
       }
