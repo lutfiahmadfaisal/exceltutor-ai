@@ -31,7 +31,7 @@ cd "$APP_DIR"
 
 # ─── 1. Git Pull ──────────────────────────────────────────────
 echo -e "${GREEN}[1/5]${NC} Git pull..."
-git pull origin master
+git pull origin main
 echo "   ✅ Up to date"
 echo ""
 
